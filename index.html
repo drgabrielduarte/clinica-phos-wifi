@@ -3,43 +3,158 @@
 <head>
     <title>Wi-Fi Clínica PHOS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta+Mahee:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        body {
+            font-family: 'Mukta Mahee', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .card {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 200px;
+            max-height: 80px;
+            margin: 0 auto 20px;
+            display: block;
+            object-fit: contain;
+        }
         .wifi-btn {
             background-color: #4CAF50;
             color: white;
-            padding: 15px 25px;
-            border-radius: 5px;
+            padding: 15px 30px;
+            border-radius: 8px;
             text-decoration: none;
             font-size: 18px;
             margin: 20px 0;
             display: inline-block;
             cursor: pointer;
+            border: none;
+            font-family: 'Mukta Mahee', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+        .wifi-btn:hover {
+            background-color: #3e8e41;
+            transform: scale(1.05);
+        }
+        #qrcode {
+            margin: 20px auto;
+            padding: 15px;
+            background: white;
+            display: inline-block;
+            border-radius: 10px;
+        }
+        .instructions {
+            text-align: left;
+            margin: 25px 0;
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .platform-section {
+            margin: 30px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+        }
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        h2, h3 {
+            color: #ffffff;
+            font-weight: 700;
+        }
+        .loading-logo {
+            display: none; /* Esconde enquanto carrega */
+            width: 50px;
+            height: 50px;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
-    <h1>Conectar ao Wi-Fi</h1>
-    
-    <!-- Botão para iOS -->
-    <a href="WIFI:S:Clinica PHOS;T:WPA;P:PHOSsorrisoeface;;" class="wifi-btn">
-        Conectar Automaticamente (iPhone)
-    </a>
-    
-    <!-- Fallback para outros dispositivos -->
-    <div style="margin-top: 30px;">
-        <p>Se o botão não funcionar, use:</p>
-        <p><strong>Rede:</strong> Clinica PHOS</p>
-        <p><strong>Senha:</strong> PHOSsorrisoeface</p>
+    <div class="card">
+        <!-- Logo com fallback caso o carregamento falhe -->
+        <img src="https://eximia.clinicaphos.com.br/phos-pdf" 
+             alt="Clínica PHOS" 
+             class="logo"
+             onerror="this.onerror=null;this.src='https://via.placeholder.com/200x80?text=Logo+PHOS';">
+        
+        <h1>Conectar ao Wi-Fi</h1>
+        <h2>Clínica PHOS</h2>
+        
+        <div class="platform-section">
+            <h3>Para iPhone/iPad:</h3>
+            <button class="wifi-btn" id="ios-btn">
+                Conectar Automaticamente
+            </button>
+            <p>ou escaneie o QR Code abaixo</p>
+        </div>
+
+        <div class="platform-section">
+            <h3>Para Android/Outros:</h3>
+            <div id="qrcode"></div>
+            <p>Use a câmera do celular para escanear</p>
+        </div>
+
+        <div class="instructions">
+            <h3>Instruções Manuais:</h3>
+            <p><strong>Rede (SSID):</strong> Clinica PHOS</p>
+            <p><strong>Senha:</strong> PHOSsorrisoeface</p>
+            <p>1. Vá em Ajustes > Wi-Fi<br>
+               2. Selecione a rede<br>
+               3. Digite a senha</p>
+        </div>
     </div>
 
     <script>
-        // Detecta iOS e mostra alerta explicativo
+        // Configuração do QR Code
+        const qrData = "WIFI:S:Clinica PHOS;T:WPA;P:PHOSsorrisoeface;;";
+        new QRCode(document.getElementById("qrcode"), {
+            text: qrData,
+            width: 180,
+            height: 180,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        // Botão para iOS
+        document.getElementById("ios-btn").addEventListener("click", function() {
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                window.location.href = qrData;
+                setTimeout(() => {
+                    alert("Toque em 'Abrir' no aviso do Safari para conectar ao Wi-Fi.");
+                }, 300);
+            } else {
+                alert("Este recurso é apenas para dispositivos Apple. Use o QR Code ou as instruções manuais.");
+            }
+        });
+
+        // Detecção automática de plataforma
         if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-            document.querySelector('.wifi-btn').addEventListener('click', function(e) {
-                alert("Toque em 'Abrir' no pop-up que aparecerá em seguida para conectar ao Wi-Fi.");
-            });
+            document.querySelector('.platform-section h3').textContent = "Para seu iPhone:";
+        } else if (/Android/.test(navigator.userAgent)) {
+            document.querySelector('.platform-section h3').textContent = "Para seu Android:";
         }
+
+        // Otimização para o logo
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.querySelector('.logo');
+            logo.style.display = 'block'; // Garante que só aparece quando totalmente carregado
+        });
     </script>
 </body>
 </html>
