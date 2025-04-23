@@ -1,75 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Conectar ao Wi-Fi - Clinica PHOS</title>
+    <title>Wi-Fi Clínica PHOS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .wifi-button {
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .wifi-btn {
             background-color: #4CAF50;
             color: white;
             padding: 15px 25px;
-            text-decoration: none;
             border-radius: 5px;
+            text-decoration: none;
             font-size: 18px;
-            cursor: pointer;
             margin: 20px 0;
             display: inline-block;
-        }
-        .manual-instructions {
-            margin-top: 20px;
-            text-align: left;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-            background: white;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1>Wi-Fi da Clínica PHOS</h1>
-    <p>Clique no botão abaixo para conectar automaticamente:</p>
+    <h1>Conectar ao Wi-Fi</h1>
     
-    <button class="wifi-button" onclick="connectToWifi()">Conectar ao Wi-Fi</button>
+    <!-- Botão para iOS -->
+    <a href="WIFI:S:Clinica PHOS;T:WPA;P:PHOSsorrisoeface;;" class="wifi-btn">
+        Conectar Automaticamente (iPhone)
+    </a>
     
-    <div class="manual-instructions">
-        <h3>Se o botão não funcionar:</h3>
-        <p><strong>Rede (SSID):</strong> Clinica PHOS</p>
+    <!-- Fallback para outros dispositivos -->
+    <div style="margin-top: 30px;">
+        <p>Se o botão não funcionar, use:</p>
+        <p><strong>Rede:</strong> Clinica PHOS</p>
         <p><strong>Senha:</strong> PHOSsorrisoeface</p>
-        <p>Vá em <strong>Ajustes > Wi-Fi</strong> e conecte manualmente.</p>
     </div>
 
     <script>
-        function connectToWifi() {
-            const ssid = "Clinica PHOS";
-            const password = "PHOSsorrisoeface";
-            
-            // iOS (iPhone/iPad)
-            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                window.location.href = `WIFI:S:${ssid};T:WPA;P:${password};;`;
-                setTimeout(() => {
-                    alert("Toque em 'Conectar' quando o iOS abrir a configuração de Wi-Fi.");
-                }, 500);
-            } 
-            // Android (alguns dispositivos)
-            else if (/Android/.test(navigator.userAgent)) {
-                window.location.href = `wifiauth://${encodeURIComponent(ssid)}?password=${encodeURIComponent(password)}`;
-                setTimeout(() => {
-                    alert("Se não conectar automaticamente, vá em Ajustes > Wi-Fi e selecione a rede manualmente.");
-                }, 500);
-            } 
-            // Outros dispositivos (mostra os dados)
-            else {
-                alert(`Seu dispositivo não suporta conexão automática. Use:\n\nSSID: ${ssid}\nSenha: ${password}`);
-            }
+        // Detecta iOS e mostra alerta explicativo
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            document.querySelector('.wifi-btn').addEventListener('click', function(e) {
+                alert("Toque em 'Abrir' no pop-up que aparecerá em seguida para conectar ao Wi-Fi.");
+            });
         }
     </script>
 </body>
